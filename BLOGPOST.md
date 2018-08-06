@@ -2,7 +2,7 @@
 
 According to the Node Foundation's [one year old](https://hackernoon.com/node-js-emerging-as-the-universal-development-framework-for-a-diversity-of-applications-c2e788290f5f) survey more than 50% of Node.js users use Docker for development. While containerization in general is a very powerful tool, and here at RisingStack we always start new projects by spinning up the needed infrastructure in a docker-compose.yaml, it can be tricky to reach the envolped Node process if you don't know how to do it. 
 
-Most of the time you can be well off running your app on your local machine and only use containers to sandbox your databases and queues, but some bugs will only show themselves when the app itself is containerized as well. In those cases it is very helpful to know how to attach a debugger to the service.
+Most of the time you can be well off running your app on your local machine and only use containers to sandbox your databases and queues, but some bugs will only show themselves when the app itself is containerized as well. Actually the idea for this post came when we ran into a bug like this with [@fazekasda](https://github.com/fazekasda). In these cases it is very helpful to know how to attach a debugger to the service.
 
 # Node inspector
 
@@ -89,6 +89,8 @@ As you can see, we opened up port 9229, which is the debug port of Node.js apps.
 3. adding `=0.0.0.0` opens up the debugger to connections from any IP.
 
 By default the inspector is bound to `127.0.0.1` which makes sense, as normally we don't want people from all around the world to be able to attach a debugger to our app. However, the container is a different host with a different IP then our host machine, so we won't be able to reach it. It is fine as long as we do it locally, however, we definitely don't want this to be run on a live server like this. For this reason **make sure it is a different file from your `docker-compose.yaml`**. In our case, it is called `debug-compose.yaml`. Of course, we'll need to maintain two different files, though this problem can be circumvented using a templating engine like handlebars, and we substantially reduced the risk of using the debug setup in production.
+
+Also note that the port forwarding rules are enclosed in `"`-s. If you omit the the rule might not work which happened in my case as well, making it difficult to figure out why we were not able the attach the debugger.
 
 With all that said, you should be able to inspect your upp in the dev tools.
 
