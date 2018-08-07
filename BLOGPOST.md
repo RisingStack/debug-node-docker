@@ -2,11 +2,11 @@
 
 According to the Node Foundation's [one year old](https://hackernoon.com/node-js-emerging-as-the-universal-development-framework-for-a-diversity-of-applications-c2e788290f5f) survey more than 50% of Node.js users use Docker for development. While containerization in general is a very powerful tool, and here at RisingStack we always start new projects by spinning up the needed infrastructure in a docker-compose.yaml, it can be tricky to reach the envolped Node process if you don't know how to do it. 
 
-Most of the time you can be well off running your app on your local machine and only use containers to sandbox your databases and queues, but some bugs will only show themselves when the app itself is containerized as well. Actually the idea for this post came when we ran into a bug like this with [@fazekasda](https://github.com/fazekasda). In these cases it is very helpful to know how to attach a debugger to the service.
+Most of the time you can be well off running your app on your local machine and only use containers to sandbox your databases and queues, but some bugs will only show themselves when the app itself is containerized as well. In these cases it is very helpful to know how to attach a debugger to the service.
 
 # Node inspector
 
-If you use [caveman debugging](https://medium.com/@firhathidayat/the-caveman-debugging-ab8f7151415f) it can be very difficult to find the right value at the right time. It gets even worse if your always have to rebuild your container image each time you add `console.log` to it. It could be a lot easier to have the image built once and jump around within it, examinig your variables while it's running. 
+If you mostly use [printf, aka caveman debugging](https://stackoverflow.com/questions/189562/what-is-the-proper-name-for-doing-debugging-by-adding-print-statements) it can be very difficult to find the right value at the right time. It gets even worse if your always have to rebuild your container image each time you add `console.log` to it. It could be a lot easier to have the image built once and jump around within it, examinig your variables while it's running. 
 
 To run your Node app in debug mode simply add `inspect` after the `node`, something like that:
 
@@ -90,7 +90,9 @@ As you can see, we opened up port 9229, which is the debug port of Node.js apps.
 
 By default the inspector is bound to `127.0.0.1` which makes sense, as normally we don't want people from all around the world to be able to attach a debugger to our app. However, the container is a different host with a different IP then our host machine, so we won't be able to reach it. It is fine as long as we do it locally, however, we definitely don't want this to be run on a live server like this. For this reason **make sure it is a different file from your `docker-compose.yaml`**. In our case, it is called `debug-compose.yaml`. Of course, we'll need to maintain two different files, though this problem can be circumvented using a templating engine like handlebars, and we substantially reduced the risk of using the debug setup in production.
 
-Also note that the port forwarding rules are enclosed in `"`-s. If you omit the the rule might not work which happened in my case as well, making it difficult to figure out why we were not able the attach the debugger.
+With a bit more work, you can expose the debug port from your staging cluster to your IP — but in that case, to **your IP only** — and debug issues there as well.
+
+Also note that the port forwarding rules are enclosed in `"`-s. If you omit the the rule might not work, making it difficult to figure out why you are not able to attach the debugger to your process.
 
 With all that said, you should be able to inspect your upp in the dev tools.
 
@@ -135,4 +137,10 @@ Now, if you hit F5 on your keyboard you'll be propmted with the debugger you got
 
 ![VSCode debugger](img/vscode-debugger.png)
 
+# Final thoughts
 
+Seeing how container technologies such as Kubernetes, AWS ECS, Docker Swarm and others are being more and more widespread it is clearly visible that containers are here to stay. The fact that you can have the same image run on your local machine while your developing that will eventually land on the cluster is definitely a nice thing as you can bundle the app with the configuration and deploy them together. However, finding bugs that only show themselves when the app is bundled up can be difficult when you rely on printf debugging, so even if you have not used it so far, it is definitely a good idea to become friends with debuggers and learn how to attach them to processes running in your containers. 
+
+Happy debugging!
+
+The idea for this post came when we ran into a bug that only arose in the container with [@fazekasda](https://github.com/fazekasda). 
