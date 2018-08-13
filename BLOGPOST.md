@@ -4,7 +4,7 @@ All code snippets and settings used in this post can be found in its dedicated [
 
 According to the Node Foundation's [one year old](https://hackernoon.com/node-js-emerging-as-the-universal-development-framework-for-a-diversity-of-applications-c2e788290f5f) survey more than 50% of Node.js users use Docker for development. While containerization in general is a very powerful tool, and here at RisingStack we always start new projects by spinning up the needed infrastructure in a docker-compose.yaml, it can be tricky to reach the envolped Node process if you don't know how to do it. 
 
-Most of the time you can be well off running your app on your local machine and only use containers to sandbox your databases and queues, but some bugs will only show themselves when the app itself is containerized as well. In these cases it is very helpful to know how to attach a debugger to the service.
+Most of the time you can be well off running your app on your local machine and only use containers to sandbox your databases and messaging queues, but some bugs will only show themselves when the app itself is containerized as well. In these cases it is very helpful to know how to attach a debugger to the service.
 
 # Node inspector
 
