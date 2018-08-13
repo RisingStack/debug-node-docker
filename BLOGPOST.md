@@ -8,7 +8,7 @@ Most of the time you can be well off running your app on your local machine and 
 
 # Node inspector
 
-If you mostly use [printf, aka caveman debugging](https://stackoverflow.com/questions/189562/what-is-the-proper-name-for-doing-debugging-by-adding-print-statements) it can be very difficult to find the right value at the right time. It gets even worse if your always have to rebuild your container image each time you add `console.log` to it. It could be a lot easier to have the image built once and jump around within it, examinig your variables while it's running. 
+If you mostly use [printf, aka caveman debugging](https://stackoverflow.com/questions/189562/what-is-the-proper-name-for-doing-debugging-by-adding-print-statements) it can be very difficult to find the right value at the right time. It gets even worse if your always have to rebuild your container image each time you add `console.log` to it. It could be a lot easier to have the image built once and jump around within it, examinig your variables while it's running. To better understand what we're gonna do here, I highly suggest you familiarize yourself with the [`node inspect`](https://nodejs.org/en/docs/guides/debugging-getting-started/#command-line-options) commands first. 
 
 To run your Node app in debug mode simply add `inspect` after the `node`, something like that:
 
@@ -138,6 +138,10 @@ It's almost ok, though in our case, the root of our app is the root of the conta
 Now, if you hit F5 on your keyboard you'll be propmted with the debugger you got used to in VSCode. Hit F5 again, to let the server start listening. If you put a breakpoint somewhere and call the server at `htpp://localhost:3000` you should see this
 
 ![VSCode debugger](img/vscode-debugger.png)
+
+# Why not `ndb`?
+
+Even though [`ndb`](https://github.com/GoogleChromeLabs/ndb/) is great for debugging currently you cannot attach it to running processes, which pretty much ruins the purpose in our case. You could also start your debug process with it inside the container and attach your debugger to if from outside, but you also need to modify your `Dockerfile` to do so, and you don't really gain anything as you would need to attach your chrome vscode, or other debugger to it anyway. Follow [this issue](https://github.com/GoogleChromeLabs/ndb/issues/60) for updates on the matter.
 
 # Final thoughts
 
